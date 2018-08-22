@@ -219,6 +219,14 @@ void ctkVTKAbstractView::forceRender()
 {
   Q_D(ctkVTKAbstractView);
 
+  // avoid calling render if the widget isn't valid, i.e. if the context isn't
+  // ready yet. This is due to asynchronous initialization of the context by
+  // the pqQVTKWidgetBase class.
+  if (!d->VTKWidget->isValid())
+    {
+    return;
+    }
+
   if (this->sender() == d->RequestTimer  &&
       !d->RequestTime.isValid())
     {
