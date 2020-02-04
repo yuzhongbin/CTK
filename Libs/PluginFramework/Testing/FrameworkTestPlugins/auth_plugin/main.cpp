@@ -9,7 +9,7 @@
 
 #include "Testing/FrameworkTestPlugins/auth_plugin/auth_plugin_service.h"
 
-const QString c_strPluginPath = "/mnt/d/xproject/ctk-superbuild/CTK-build/bin/test_plugins/libauth_plugin.so";
+QString authPluginName = "libauth_plugin.so";
 
 int main(int argc, char *argv[])
 {
@@ -17,7 +17,13 @@ int main(int argc, char *argv[])
 
     app.setOrganizationName("CTK");
     app.setOrganizationDomain("commontk.org");
-    app.setApplicationName("ctkPluginFrameworkAuthPlugsTests");    
+    app.setApplicationName("ctkPluginFrameworkAuthPlugsTests");
+
+#ifdef CMAKE_INTDIR
+    authPluginName = app.applicationDirPath() + "/../test_plugins/" CMAKE_INTDIR "/" + authPluginName;;
+#else
+    authPluginName = app.applicationDirPath() + "/test_plugins/" + authPluginName;;
+#endif
 
     ctkPluginFrameworkFactory frameWorkFactory;
     QSharedPointer<ctkPluginFramework> framework = frameWorkFactory.getFramework();
@@ -33,8 +39,8 @@ int main(int argc, char *argv[])
     ctkPluginContext* pluginContext = framework->getPluginContext();
     try {
         // 安装插件
-        QSharedPointer<ctkPlugin> plugin = pluginContext->installPlugin(QUrl::fromLocalFile(c_strPluginPath));
-        
+        QSharedPointer<ctkPlugin> plugin = pluginContext->installPlugin(QUrl::fromLocalFile(authPluginName));
+
         framework->start();
         qDebug() << "CTK Plugin Framework start ...";
 
