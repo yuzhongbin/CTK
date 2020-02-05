@@ -5,7 +5,7 @@ set(PLUGIN_export_directive "auth_plugin_EXPORT")
 set(PLUGIN_SRCS
     auth_plugin.cpp
     auth_plugin_activator.cpp
-    auth_plugin_service.h
+    ../service/authentication_service.h
 )
 
 set(PLUGIN_MOC_SRCS

@@ -6,14 +6,14 @@
 
 class ctkPluginContext;
 
-class AuthPlugin : public QObject, public AuthenticationService
+class AuthPlugin2 : public QObject, public AuthenticationService
 {
     Q_OBJECT
     Q_INTERFACES(AuthenticationService)
 
 public:
-    AuthPlugin();
+    AuthPlugin2();
     bool login(const QString& username, const QString& password) override;
 };
 
-#endif
+#endif // AUTH_PLUGIN_H

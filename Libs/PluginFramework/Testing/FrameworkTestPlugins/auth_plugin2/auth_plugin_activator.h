@@ -4,13 +4,13 @@
 #include <ctkPluginActivator.h>
 #include "../service/authentication_service.h"
 
-class AuthPluginActivator : public QObject, public ctkPluginActivator
+class AuthPluginActivator2 : public QObject, public ctkPluginActivator
 {
     Q_OBJECT
     Q_INTERFACES(ctkPluginActivator)
 
-#ifdef HAVE_QT5    
-    Q_PLUGIN_METADATA(IID "auth_plugin")
+#ifdef HAVE_QT5
+    Q_PLUGIN_METADATA(IID "auth_plugin2")
 #endif
 
 public:
@@ -18,7 +18,7 @@ public:
     void stop(ctkPluginContext* context) override;
 
 private:
-    class AuthPlugin *m_implement;
+    class AuthPlugin2 *m_implement;
 };
 
-#endif
+#endif // AUTH_PLUGIN_ACTIVATOR_H

@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
   ctkProperties fwProps;
   fwProps.insert(ctkPluginConstants::FRAMEWORK_STORAGE_CLEAN, ctkPluginConstants::FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
-  fwProps.insert(ctkPluginFrameworkLauncher::PROP_PLUGINS, "app_test");
+  fwProps.insert(ctkPluginFrameworkLauncher::PROP_PLUGINS, "auth_plugin");
   fwProps.insert("org.commontk.pluginfw.debug.pluginfw", true);
 
 #if defined(Q_CC_GNU) && ((__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 5)))
@@ -57,6 +57,6 @@ int main(int argc, char** argv)
   ctkPluginFrameworkLauncher::addSearchPath(pluginDir);
   ctkPluginFrameworkLauncher::run();
 
-  Q_ASSERT_X(QCoreApplication::instance()->property("app_test.success").toBool(), "MyAppContainer", "App did not run");
+  Q_ASSERT_X(QCoreApplication::instance()->property("auth_plugin.success").toBool(), "MyAppContainer", "App did not run");
   qDebug() << "App run successful";
 }
