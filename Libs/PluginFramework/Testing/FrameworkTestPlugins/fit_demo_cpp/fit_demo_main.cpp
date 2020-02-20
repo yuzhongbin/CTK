@@ -1,3 +1,11 @@
+/**
+ * @file fit_demo_main.cpp
+ * @copyright 2019 Huawei. All rights reserved.
+ * @author Zhongbin Yu 00286766
+ *
+ * @brief
+ */
+
 #include <QCoreApplication>
 #include <QDirIterator>
 #include <QtDebug>
@@ -7,8 +15,7 @@
 #include <ctkPluginException.h>
 #include <ctkPluginContext.h>
 
-// authentication服务定义
-#include "../service/authentication_service.h"
+#include "../service/fit_demo_service.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,7 +23,7 @@ int main(int argc, char *argv[])
 
     app.setOrganizationName("CTK");
     app.setOrganizationDomain("huawei.it");
-    app.setApplicationName("ctkPluginFrameworkAuthPlugsTests");
+    app.setApplicationName("fit_demo_plugins_test");
 
     ctkPluginFrameworkFactory frameWorkFactory;
     QSharedPointer<ctkPluginFramework> framework = frameWorkFactory.getFramework();
@@ -41,33 +48,17 @@ int main(int argc, char *argv[])
 #endif
 
     // 遍历路径下的所有插件
-    QDirIterator itPlugin(path, QStringList() << "*auth_plugin*.so", QDir::Files);
+    QDirIterator itPlugin(path, QStringList() << "*fit_demo*.so", QDir::Files);
     while (itPlugin.hasNext()) {
         QString strPlugin = itPlugin.next();
         try {
             // 安装插件
             QSharedPointer<ctkPlugin> plugin = pluginContext->installPlugin(QUrl::fromLocalFile(strPlugin));
             qDebug() << "Plugin install ..." << QFileInfo(strPlugin).fileName();
-#if 0
-            // 获取清单头和值
-            QHash<QString, QString> headers = plugin->getHeaders();
-            qDebug() << "Headers:" << headers;
 
-            // 获取符号名
-            QString symb = plugin->getSymbolicName();
-            qDebug() << "Symbolic Name:" << symb;
-
-            // 获取版本号
-            ctkVersion version = plugin->getVersion();
-            qDebug() << "Version:" << version.toString()
-                     << "Major:" << version.getMajor()
-                     << "Micro:" << version.getMicro()
-                     << "Minor:" << version.getMinor()
-                     << "Qualifier:" << version.getQualifier();
-#endif
             // 启动插件
-            // plugin->start(ctkPlugin::START_TRANSIENT);
-            // qDebug() << "Plugin start ...";
+            plugin->start(ctkPlugin::START_TRANSIENT);
+            qDebug() << "Plugin start ...";
         } catch (const ctkPluginException &e) {
             qDebug() << "Failed to install plugin" << e.what();
             return -1;
@@ -75,38 +66,46 @@ int main(int argc, char *argv[])
     }
 
     // 按CTKCore规则获取最合适的服务（SERVICE_RANKING值小优先）
-    auto ref = pluginContext->getServiceReference<AuthenticationService>();
+    auto ref = pluginContext->getServiceReference<fit_demo_service>();
     if (ref) {
-        auto authService = qobject_cast<AuthenticationService *>(pluginContext->getService(ref));
+        auto fit_demo = qobject_cast<fit_demo_service *>(pluginContext->getService(ref));
 
-        if (authService != nullptr) {
+        if (fit_demo != nullptr) {
             // 调用服务，进行认证
-            bool isLogin = authService->login("root", "auth2");
-            if (isLogin) {
-                qDebug() << "Login successfully";
-            } else {
-                qDebug() << "Login failed";
+            auto result = fit_demo->add(4, 5);
+            qDebug() << "4 + 5 = " << result;
+        }
+    }
+
+    // 按关键字过滤服务
+    auto refs = pluginContext->getServiceReferences<fit_demo_service>("(&(language=go))");
+    foreach (ctkServiceReference ref, refs) {
+        if (ref) {
+            // 获取指定 ctkServiceReference 引用的服务对象
+            auto fit_demo = qobject_cast<fit_demo_service *>(pluginContext->getService(ref));
+            if (fit_demo != nullptr) {
+                // 调用服务，进行认证
+                auto result = fit_demo->add(4, 5);
+                qDebug() << "4 + 5 =" << result;
             }
         }
     }
 
     // 按关键字过滤服务
-    auto refs = pluginContext->getServiceReferences<AuthenticationService>("(&(name=plugin1))");
+    refs = pluginContext->getServiceReferences<fit_demo_service>("(&(language=java))");
     foreach (ctkServiceReference ref, refs) {
         if (ref) {
             // 获取指定 ctkServiceReference 引用的服务对象
-            auto authService = qobject_cast<AuthenticationService *>(pluginContext->getService(ref));
-            if (authService != nullptr) {
+            auto fit_demo = qobject_cast<fit_demo_service *>(pluginContext->getService(ref));
+            if (fit_demo != nullptr) {
                 // 调用服务，进行认证
-                bool isLogin = authService->login("root", "123456");
-                if (isLogin) {
-                    qDebug() << "Login successfully";
-                } else {
-                    qDebug() << "Login failed";
-                }
+                auto result = fit_demo->add(4, 5);
+                qDebug() << "4 + 5 =" << result;
             }
         }
     }
 
     return app.exec();
 }
+
+
