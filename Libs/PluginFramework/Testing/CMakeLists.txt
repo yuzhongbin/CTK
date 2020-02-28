@@ -7,11 +7,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Cpp)
 
 set(fwtest_plugins
   app_test
-  fit_demo_cpp
-  fit_demo_java
-  fit_demo_go
-  auth_plugin
-  auth_plugin2
+  fit_add
+  fit_add_proxy
+  fit_add_strategy
   pluginA_test  
   pluginA1_test
   pluginS_test
